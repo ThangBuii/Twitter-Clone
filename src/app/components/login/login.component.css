@@ -1,0 +1,125 @@
+.body{
+    height: 100vh;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+
+
+.container-1{
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    height: 100vh;
+}
+
+.logo{
+    margin-top: 50px;
+}
+
+.title{
+    margin: 50px 0;
+}
+
+.title h1{
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 84px;
+    letter-spacing: -1.2px;
+    color: rgba(15,20,25,1.00);
+    word-wrap: break-word;
+    width: 400px;
+}
+
+.sub-title p{
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 25px;
+    letter-spacing: -1px;
+}
+
+.btns{
+    display: flex;
+    flex-direction: column;
+    margin-top: 25px;
+    border: none;
+    justify-content: start;
+    text-align: start;
+}
+
+.create{
+    color: white;
+    background-color:  rgb(29, 155, 240);
+    padding: 10px 120px;
+    border: none;
+    font-size: 17px;
+    font-weight: 700;
+    border-radius: 25px;
+    transition: all 0.3s;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+.create:hover{
+    background-color: rgb(26, 140, 216);
+}
+
+.create-account p{
+    width: 400px;
+    font-size: 12px;
+    color: rgb(83, 100, 113);
+}
+
+.create-account{
+    margin-bottom: 60px;
+}
+
+.create-account span{
+    color: rgb(29, 155, 240);
+    cursor: pointer;
+}
+
+.sign-in p{
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 25px;
+}
+
+.login{
+    color: rgb(29, 155, 240);
+    background-color:  white;
+    border: 1px solid rgb(207, 217, 222);
+    padding: 10px 155px;
+    font-size: 17px;
+    font-weight: 700;
+    border-radius: 25px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.login:hover{
+    background-color: rgba(29, 155, 240, 0.1);
+}
+
+    .modal-content{
+        height: 90vh;
+    }
+
+.modal-header{
+    border-bottom: none;
+}
+
+.btn-close{
+    margin: 0
+}
+
+.custom-modal-content {
+    width: 80%; /* Adjust the width as needed */
+    max-height: 80vh; /* Adjust the height as needed */
+    margin: 0 auto; /* Center horizontally */
+    top: 10%; /* Center vertically */
+}

@@ -1,0 +1,55 @@
+<div class="body">
+    <div class="container-1">
+        <div class="logo">
+            <svg width="50" height="45" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path
+                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z">
+                </path>
+            </svg>
+        </div>
+        <div class="title">
+            <h1>Happening right now</h1>
+        </div>
+        <div class="sub-title">
+            <p>Join now.</p>
+        </div>
+        <div class="btns">
+            <div class="create-account">
+                <button (click)="openModal(template)" class="create">Create Account</button>
+                <p>By signing up, you agree to <span>the Terms of Service</span>
+                    and <span>Privacy Policy</span>, including <span>Use of Cookies</span>.</p>
+
+            </div>
+            <div class="sign-in">
+                <p>Already have an account?</p>
+                <button class="login">Log in</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<ng-template #template>
+    
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="btn-close" aria-label="Close" (click)="modalRef?.hide()">
+                    <span aria-hidden="true" class="visually-hidden">&times;</span>
+                </button>
+                <div class="mx-auto">
+                    <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path
+                            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z">
+                        </path>
+                    </svg>
+                </div>
+            </div>
+            <div class="modal-body">
+                This is a modal.
+            </div>
+        </div>
+
+
+</ng-template>
