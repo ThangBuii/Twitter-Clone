@@ -1,4 +1,4 @@
-.body{
+.body {
     height: 100vh;
     display: flex;
     align-items: start;
@@ -6,9 +6,12 @@
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
+p{
+    margin: 0;
+}
 
 
-.container-1{
+.container-1 {
     font-family: inherit;
     display: flex;
     flex-direction: column;
@@ -16,33 +19,33 @@
     height: 100vh;
 }
 
-.logo{
+.logo {
     margin-top: 50px;
 }
 
-.title{
+.title {
     margin: 50px 0;
 }
 
-.title h1{
+.title h1 {
     font-family: inherit;
     font-weight: 700;
     font-size: 40px;
     line-height: 84px;
     letter-spacing: -1.2px;
-    color: rgba(15,20,25,1.00);
+    color: rgba(15, 20, 25, 1.00);
     word-wrap: break-word;
     width: 400px;
 }
 
-.sub-title p{
+.sub-title p {
     font-family: inherit;
     font-weight: 700;
     font-size: 25px;
     letter-spacing: -1px;
 }
 
-.btns{
+.btns {
     display: flex;
     flex-direction: column;
     margin-top: 25px;
@@ -51,9 +54,9 @@
     text-align: start;
 }
 
-.create{
+.create {
     color: white;
-    background-color:  rgb(29, 155, 240);
+    background-color: rgb(29, 155, 240);
     padding: 10px 120px;
     border: none;
     font-size: 17px;
@@ -64,34 +67,34 @@
     margin-bottom: 5px;
 }
 
-.create:hover{
+.create:hover {
     background-color: rgb(26, 140, 216);
 }
 
-.create-account p{
+.create-account p {
     width: 400px;
     font-size: 12px;
     color: rgb(83, 100, 113);
 }
 
-.create-account{
+.create-account {
     margin-bottom: 60px;
 }
 
-.create-account span{
+.create-account span {
     color: rgb(29, 155, 240);
     cursor: pointer;
 }
 
-.sign-in p{
+.sign-in p {
     font-size: 20px;
     font-weight: 500;
     margin-bottom: 25px;
 }
 
-.login{
+.login {
     color: rgb(29, 155, 240);
-    background-color:  white;
+    background-color: white;
     border: 1px solid rgb(207, 217, 222);
     padding: 10px 155px;
     font-size: 17px;
@@ -101,25 +104,158 @@
     cursor: pointer;
 }
 
-.login:hover{
+.login:hover {
     background-color: rgba(29, 155, 240, 0.1);
 }
 
-    .modal-content{
-        height: 90vh;
-    }
-
-.modal-header{
-    border-bottom: none;
+.custom-modal{
+    height: 90vh;   
+    min-height: 400px;
+    max-width: 80vw;
+    max-height: 90vh;
+    height: 650px;
+    min-width: 600px;
+    flex-shrink: 1;
+    border-radius: 16px;
+    overflow: hidden;
 }
 
-.btn-close{
+.modal-content{
+    height: 90vh;   
+    min-height: 400px;
+    max-width: 80vw;
+    max-height: 90vh;
+    height: 650px;
+    min-width: 600px;
+    flex-shrink: 1;
+    overflow: hidden;
+}
+
+
+
+.modal-header {
+    border-bottom: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.btn-close {
     margin: 0
 }
 
-.custom-modal-content {
-    width: 80%; /* Adjust the width as needed */
-    max-height: 80vh; /* Adjust the height as needed */
-    margin: 0 auto; /* Center horizontally */
-    top: 10%; /* Center vertically */
+.hidden{
+    min-width: 56px;
 }
+
+.custom-btn-close{
+    font-size: 10px; /* Adjust the font size as needed */
+    width: 15px; /* Adjust the width as needed */
+    height: 15px; /* Adjust the height as needed */
+    border-radius: 25px;
+    padding: 10px 10px;
+    color: rgba(15,20,25,1.00);
+    transition: all 0.3s;
+}
+
+.custom-btn-close:hover{
+    background-color: rgb(156, 156, 156);
+}
+
+.modal-body{
+    display: flex;
+    flex-direction: column;
+
+}
+
+.login-form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.login-form h1{
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 35px;
+    line-height: 84px;
+    letter-spacing: -1.2px;
+    color: rgba(15, 20, 25, 1.00);
+    word-wrap: break-word;
+    margin-bottom: 30px;
+}
+
+.login-form input{
+    min-width: 300px;
+    margin-bottom: 30px;
+}
+
+.next{
+    color: white;
+    background-color: black;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 100%;
+    border: none;
+    font-size: 17px;
+    font-weight: 700;
+    border-radius: 25px;
+    transition: all 0.3s;
+    cursor: pointer;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.next:hover{
+    opacity: 0.8;
+}
+
+.btn-forgot{
+    color: black;
+    background-color: white;
+    border: 1px solid rgb(207, 217, 222);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 100%;
+    font-size: 17px;
+    font-weight: 700;
+    border-radius: 25px;
+    transition: all 0.3s;
+    cursor: pointer;
+    margin-bottom: 5px;
+    display: block;
+    margin-bottom: 50px;
+}
+
+.btn-forgot:hover{
+    background-color: rgb(207, 217, 222);
+}
+
+.custom-login{
+    color: white;
+    background-color: rgb(15, 20, 25);
+    padding-top: 10px;
+    padding-bottom: 10  px;
+    width: 100%;
+    font-size: 17px;
+    font-weight: 700;
+    border-radius: 25px;
+    transition: all 0.3s;
+    cursor: pointer;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.custom-header{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+.custom-header p{
+    font-size: 22px;
+    font-weight: 700;
+    margin-left: 15px;
+    padding: 0;
+}
+
