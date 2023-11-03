@@ -5,6 +5,7 @@ import java.util.Date;
 import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,6 @@ import com.thang.backend.exception.CustomException;
 import com.thang.backend.repository.UserRepository;
 import com.thang.backend.service.UserService;
 
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -44,10 +44,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AuthenticationResponse login(AuthenticationRequest request) {
+        String usernameOrEmail = request.getUsername();
+
+        if(usernameOrEmail.contains("@")){
+            var user = userRepository.findByEmail(usernameOrEmail).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            usernameOrEmail = user.getUsername();
+        }
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        var user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow();
+                new UsernamePasswordAuthenticationToken(usernameOrEmail, request.getPassword()));
+        var user = userRepository.findByUsername(usernameOrEmail).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder().token(jwtToken).build();

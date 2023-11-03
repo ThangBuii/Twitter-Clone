@@ -1,7 +1,9 @@
 package com.thang.backend.controller;
 
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.thang.backend.dto.AuthenticationResponse;
+import com.thang.backend.dto.Message;
 import com.thang.backend.dto.User.AuthenticationRequest;
 import com.thang.backend.dto.User.OtpRequest;
 import com.thang.backend.dto.User.RegisterRequest;
+import com.thang.backend.exception.CustomException;
 import com.thang.backend.service.UserService;
 
 import jakarta.servlet.http.Cookie;
@@ -24,26 +28,49 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final UserService userService;
-    
-    //add validation
+
+    // add validation
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request, HttpServletResponse response){
-        var token = userService.register(request);
-        Cookie jwtCookie = new Cookie("JWT-TOKEN",token.getToken());
-        jwtCookie.setHttpOnly(true);
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request, HttpServletResponse response) {
+        try {
+            var token = userService.register(request);
 
-        response.addCookie(jwtCookie);
-        return ResponseEntity.ok(token);
+            Cookie jwtCookie = new Cookie("JWT_TOKEN", token.getToken());
+            jwtCookie.setHttpOnly(true);
+            jwtCookie.setSecure(true); // In production, use HTTPS
+
+            response.addCookie(jwtCookie);
+
+            // Return a 201 Created response for successful registration
+            return ResponseEntity.status(HttpStatus.CREATED).body("Account created");
+        } catch (Exception ex) {
+            // Handle registration failure and return an appropriate response
+            throw new CustomException(404, "Server error");
+        }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request){
-        return ResponseEntity.ok(userService.login(request));
+    public ResponseEntity<Message> login(@RequestBody AuthenticationRequest request,HttpServletResponse response) {
+        try {
+            var token = userService.login(request);
+
+            Cookie jwtCookie = new Cookie("JWT_TOKEN", token.getToken());
+            jwtCookie.setHttpOnly(true);
+            jwtCookie.setSecure(true); // In production, use HTTPS
+
+            response.addCookie(jwtCookie);
+
+            // Return a 201 Created response for successful registration
+            return ResponseEntity.ok(Message.builder().message("Login successful").build());
+        } catch (Exception ex) {
+            // Handle registration failure and return an appropriate response
+            throw new CustomException(401, "Wrong password");
+        }
     }
 
-    @PostMapping("/user/checkUsername")
-    public ResponseEntity<Boolean> checkUsername(@RequestParam String value){
+    @GetMapping("/user/checkUsername")
+    public ResponseEntity<Boolean> checkUsername(@RequestParam String value) {
         if (value.contains("@")) {
             // Input contains "@" symbol, treat it as an email
             boolean emailExists = userService.checkEmailExisted(value);
@@ -56,7 +83,7 @@ public class UserController {
     }
 
     @PostMapping("/user/otp")
-    public ResponseEntity<Integer> sendOtpToEmail(@RequestBody OtpRequest info){
+    public ResponseEntity<Integer> sendOtpToEmail(@RequestBody OtpRequest info) {
         int otp = userService.sendOTP(info);
         return ResponseEntity.ok(otp);
     }

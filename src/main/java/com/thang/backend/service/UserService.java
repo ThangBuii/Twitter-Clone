@@ -5,7 +5,6 @@ import com.thang.backend.dto.User.AuthenticationRequest;
 import com.thang.backend.dto.User.OtpRequest;
 import com.thang.backend.dto.User.RegisterRequest;
 
-import jakarta.mail.MessagingException;
 
 public interface UserService {
 
