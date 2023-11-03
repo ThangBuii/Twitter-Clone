@@ -1,4 +1,5 @@
 import { Component, TemplateRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 
@@ -31,7 +32,7 @@ export class LoginComponent {
   ];
 
 
-  constructor(private modalService: BsModalService) { }
+  constructor(private modalService: BsModalService,private router:Router) { }
 
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template, {
@@ -61,6 +62,10 @@ export class LoginComponent {
     for (let year = currentYear; year >= currentYear - yearsInPast; year--) {
       this.yearArray.push(year);
     }
+  }
+
+  redirectToHome() {
+    this.router.navigate(['/home']);
   }
 
 
