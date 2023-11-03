@@ -1,13 +1,16 @@
 package com.thang.backend.controller;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.thang.backend.dto.AuthenticationResponse;
 import com.thang.backend.dto.User.AuthenticationRequest;
+import com.thang.backend.dto.User.OtpRequest;
 import com.thang.backend.dto.User.RegisterRequest;
 import com.thang.backend.service.UserService;
 
@@ -37,5 +40,24 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request){
         return ResponseEntity.ok(userService.login(request));
+    }
+
+    @PostMapping("/user/checkUsername")
+    public ResponseEntity<Boolean> checkUsername(@RequestParam String value){
+        if (value.contains("@")) {
+            // Input contains "@" symbol, treat it as an email
+            boolean emailExists = userService.checkEmailExisted(value);
+            return ResponseEntity.ok(emailExists);
+        } else {
+            // Input does not contain "@" symbol, treat it as a username
+            boolean usernameExists = userService.checkUsernameExisted(value);
+            return ResponseEntity.ok(usernameExists);
+        }
+    }
+
+    @PostMapping("/user/otp")
+    public ResponseEntity<Integer> sendOtpToEmail(@RequestBody OtpRequest info){
+        int otp = userService.sendOTP(info);
+        return ResponseEntity.ok(otp);
     }
 }
