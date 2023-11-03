@@ -259,3 +259,9 @@ p{
     padding: 0;
 }
 
+.readonly-input {
+    background-color: #f8f9fa; /* Set the background color to gray or the desired color */
+    color: #6c757d; /* Set the text color to a subdued color */
+    cursor: default; /* Show a "not-allowed" cursor */
+}
+
