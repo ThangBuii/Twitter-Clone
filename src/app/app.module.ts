@@ -8,13 +8,15 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { FormsModule } from '@angular/forms';
 import { HomeComponent } from './components/home/home.component';
 import { HttpClientModule } from '@angular/common/http';
-import { AlertModule } from 'ngx-bootstrap/alert'; 
+import { AlertModule } from 'ngx-bootstrap/alert';
+import { ModalComponent } from './components/modal/modal.component'; 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    HomeComponent
+    HomeComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,
