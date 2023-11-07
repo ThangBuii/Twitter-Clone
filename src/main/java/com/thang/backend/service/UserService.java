@@ -2,6 +2,8 @@ package com.thang.backend.service;
 
 import com.thang.backend.dto.AuthenticationResponse;
 import com.thang.backend.dto.User.AuthenticationRequest;
+import com.thang.backend.dto.User.CheckEmailRequest;
+import com.thang.backend.dto.User.CheckEmailResponse;
 import com.thang.backend.dto.User.OtpRequest;
 import com.thang.backend.dto.User.RegisterRequest;
 
@@ -17,5 +19,7 @@ public interface UserService {
     boolean checkEmailExisted(String value);
 
     int sendOTP(OtpRequest info);
+
+    CheckEmailResponse checkAccountExists(CheckEmailRequest info);
     
 }

@@ -12,11 +12,12 @@ import org.springframework.stereotype.Service;
 import com.thang.backend.config.JwtService;
 import com.thang.backend.dto.AuthenticationResponse;
 import com.thang.backend.dto.User.AuthenticationRequest;
+import com.thang.backend.dto.User.CheckEmailRequest;
+import com.thang.backend.dto.User.CheckEmailResponse;
 import com.thang.backend.dto.User.OtpRequest;
 import com.thang.backend.dto.User.RegisterRequest;
 import com.thang.backend.entity.Role;
 import com.thang.backend.entity.User;
-import com.thang.backend.exception.CustomException;
 import com.thang.backend.repository.UserRepository;
 import com.thang.backend.service.UserService;
 
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AuthenticationResponse register(RegisterRequest request) {
-        User user = User.builder().email(request.getEmail()).username(request.getUsername())
+        User user = User.builder().email(request.getEmail()).username(request.getUsername()).displayName(request.getDisplayName())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER).dob(request.getDob()).registrationDate(new Date(System.currentTimeMillis())).build();
         userRepository.save(user);
@@ -46,13 +47,15 @@ public class UserServiceImpl implements UserService {
     public AuthenticationResponse login(AuthenticationRequest request) {
         String usernameOrEmail = request.getUsername();
 
-        if(usernameOrEmail.contains("@")){
-            var user = userRepository.findByEmail(usernameOrEmail).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if (usernameOrEmail.contains("@")) {
+            var user = userRepository.findByEmail(usernameOrEmail)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             usernameOrEmail = user.getUsername();
         }
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(usernameOrEmail, request.getPassword()));
-        var user = userRepository.findByUsername(usernameOrEmail).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        var user = userRepository.findByUsername(usernameOrEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder().token(jwtToken).build();
@@ -70,9 +73,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int sendOTP(OtpRequest info) {
-        if (userRepository.existsByUsername(info.getUsername())) {
-            throw new CustomException(400, "Username existed");
-        }
         int otp = (int) ((Math.random() * 900_000) + 100_000);
 
         try {
@@ -82,6 +82,13 @@ public class UserServiceImpl implements UserService {
             e.printStackTrace(); // Example: Log the exception stack trace
         }
         return otp;
+    }
+
+    @Override
+    public CheckEmailResponse checkAccountExists(CheckEmailRequest info) {
+        CheckEmailResponse response = new CheckEmailResponse();
+        response.setEmailExist(userRepository.existsByEmail(info.getEmail()));
+        return response;
     }
 
 }

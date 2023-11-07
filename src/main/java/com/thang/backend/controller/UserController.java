@@ -9,10 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.thang.backend.dto.AuthenticationResponse;
+    
 import com.thang.backend.dto.Message;
 import com.thang.backend.dto.User.AuthenticationRequest;
+import com.thang.backend.dto.User.CheckEmailRequest;
+import com.thang.backend.dto.User.CheckEmailResponse;
 import com.thang.backend.dto.User.OtpRequest;
 import com.thang.backend.dto.User.RegisterRequest;
 import com.thang.backend.exception.CustomException;
@@ -43,7 +44,7 @@ public class UserController {
             response.addCookie(jwtCookie);
 
             // Return a 201 Created response for successful registration
-            return ResponseEntity.status(HttpStatus.CREATED).body("Account created");
+            return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder().message("Account created").build());
         } catch (Exception ex) {
             // Handle registration failure and return an appropriate response
             throw new CustomException(404, "Server error");
@@ -86,5 +87,11 @@ public class UserController {
     public ResponseEntity<Integer> sendOtpToEmail(@RequestBody OtpRequest info) {
         int otp = userService.sendOTP(info);
         return ResponseEntity.ok(otp);
+    }
+
+    @PostMapping("user/checkAccountExists")
+    public ResponseEntity<CheckEmailResponse> checkAccountExists(@RequestBody CheckEmailRequest info){
+        CheckEmailResponse res = userService.checkAccountExists(info);
+        return ResponseEntity.ok(res);
     }
 }

@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class OtpRequest {
-
-    private String email;
+@AllArgsConstructor
+public class CheckEmailRequest {
+    String email;
 }

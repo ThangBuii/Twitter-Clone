@@ -18,5 +18,7 @@ public class RegisterRequest {
 
     private String username;
 
+    private String displayName;
+
     private Date dob;
 }
