@@ -12,20 +12,29 @@ import { UserServiceService } from 'src/app/services/user-service.service';
 })
 export class LoginComponent {
   modalRef?: BsModalRef | null;
-  modalRef2?: BsModalRef;
   currentStep: number = 0
+  currentModal = ''
   user = {
     password: '',
     email: '',
-    username: '',
+    displayName: '',
     dob: '',
+    username: ''
+  }
+  showError=false;
+  otp = 0
+  otpValue = ''
+  dob = {
+    day: 0,
+    month: 0,
+    year: 0,
   }
   alerts: any[] = [{
     type: '',
     msg: ``,
     timeout: 5000
   }];
-  usernameOrEmailLabel= ''
+  usernameOrEmailLabel = ''
 
   yearArray: number[] = [];
   dayArray: number[] = [];
@@ -53,15 +62,7 @@ export class LoginComponent {
     this.alerts = this.alerts.filter(alert => alert !== dismissedAlert);
   }
 
-  openRegisterModal(template: TemplateRef<any>) {
-    this.modalRef2 = this.modalService.show(template, {
-      backdrop: 'static', // Prevent closing on backdrop click
-      keyboard: false,
-      // Prevent closing when pressing the Escape key
-    });
-  }
-
-  openLoginModal(template: TemplateRef<any>) {
+  openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template, {
       backdrop: 'static', // Prevent closing on backdrop click
       keyboard: false,
@@ -69,13 +70,17 @@ export class LoginComponent {
     });
   }
 
-  closeLoginModal(){
+  closeModal() {
     this.modalRef?.hide();
     this.resetStep();
   }
-  closeRegisterModal(){
-    this.modalRef2?.hide();
-    this.resetStep();
+
+  setCurrentModal(modal: string) {
+    this.currentModal = modal
+  }
+
+  setCurrentModalToRegister() {
+    this.currentModal = 'register'
   }
 
   nextStep() {
@@ -84,20 +89,21 @@ export class LoginComponent {
 
   resetStep() {
     this.currentStep = 0;
-    this.user = {
-      password: '',
-      email: '',
-      username: '',
-      dob: '',
+    this.resetUser()
+    this.dob = {
+      month : 0,
+      day : 0,
+      year: 0
     }
   }
 
-  resetUser(){
+  resetUser() {
     this.user = {
       password: '',
       email: '',
-      username: '',
+      displayName: '',
       dob: '',
+      username:''
     }
   }
 
@@ -120,67 +126,152 @@ export class LoginComponent {
 
   //handle form
   onSubmitLogin1(formData: any) {
-    
-      
-      this.userService.checkUsernameUser(formData.email).subscribe(
-        (isAvailable: boolean) => {
-          if (!isAvailable) {
-            this.alerts.push({
-              type: 'info',
-              msg: 'Username or email is not existed',
-              timeout: 3000
-            });
-            this.user.email = '';
-          } else {
-            console.log('Hiiiii ');
-            formData.email.includes("@")?this.usernameOrEmailLabel = "Email":this.usernameOrEmailLabel = "Username"
-            this.nextStep();
-          }
-
-          // Hide loading indicator when the API call is complete
-        },
-        (error) => {
-          console.error('Error checking ', error);
-
-          // Hide loading indicator in case of an error
-      
-
-        }
-      );
+    if(!formData.email){
+      return;
     }
-
-    
-
-    onSubmitLogin2(formData: any){
-      const data = {
-        username : this.user.email,
-        password: this.user.password
-      }
-      this.userService.loginUser(data).subscribe(
-        (response) => {
-          if (response.message === "Login successful") {
-            // The response is "Login successful", do something here
-            this.modalRef?.hide();
-            this.redirectToHome();
-            this.resetStep()
-          } else {
-            this.alerts.push({
-              type: 'info',
-              msg: 'Wrong password',
-              timeout: 3000
-            });
-            this.user.password = ''
-          }
-        },
-        (error) => {
+    this.userService.checkUsernameUser(formData.email).subscribe(
+      (isAvailable: boolean) => {
+        if (!isAvailable) {
           this.alerts.push({
             type: 'info',
-            msg: error.error.message,
+            msg: 'Username or email is not existed',
+            timeout: 3000
+          });
+          this.user.email = '';
+        } else {
+          formData.email.includes("@") ? this.usernameOrEmailLabel = "Email" : this.usernameOrEmailLabel = "Username"
+          this.nextStep();
+        }
+        // Hide loading indicator when the API call is complete
+      },
+      (error) => {
+        console.error('Error checking ', error);
+        // Hide loading indicator in case of an error
+      }
+    );
+  }
+
+
+
+  onSubmitLogin2(formData: any) {
+    const data = {
+      username: this.user.email,
+      password: this.user.password
+    }
+    if(!data.password || !data.username){
+      return;
+    }
+    this.userService.loginUser(data).subscribe(
+      (response) => {
+        if (response.message === "Login successful") {
+          // The response is "Login successful", do something here
+          this.modalRef?.hide();
+          this.redirectToHome();
+          this.resetStep()
+        } else {
+          this.alerts.push({
+            type: 'info',
+            msg: 'Wrong password',
             timeout: 3000
           });
           this.user.password = ''
         }
-      )
+      },
+      (error) => {
+        this.alerts.push({
+          type: 'info',
+          msg: error.error.message,
+          timeout: 3000
+        });
+        this.user.password = ''
+      }
+    )
+  }
+
+  onSubmitRegister1(data : any){
+    console.log(data.email + " " + data.username)
+    const userInfo = {
+      email: data.email
     }
+    if (!data.month || !data.day || !data.year) {
+      // Display an error message or handle the invalid date scenario as needed
+      return;
+    }
+    this.userService.checkUsernameAndEmailUser(userInfo).subscribe(
+      (response) => {
+        if(response.emailExist){
+          this.alerts.push({
+            type: 'info',
+            msg: 'Username and email is existed',
+            timeout: 3000
+          });
+        }else if(!response.emailExist){
+          this.sendOtp(data.email);
+          this.user.dob = this.transferBirthDate(data.month,data.day,data.year)
+          this.nextStep();
+        }
+      },
+      (error) => {
+        console.error('Error checking ', error);
+        // Hide loading indicator in case of an error
+      }
+    )
+  }
+
+  sendOtp(email : string){
+    const data = {
+      email : email
+    }
+
+    this.userService.sendOTPUser(data).subscribe(
+      (response) => {
+        this.otp = response;
+      },
+      (error) => {
+        console.error('Error checking ', error);
+      }
+    )
+  }
+
+  transferBirthDate(month:number,day:number,year:number){
+    const formattedMonth = month.toString().padStart(2, '0');
+    const formattedDay = day.toString().padStart(2, '0');
+    const formattedYear = year.toString();
+    return `${formattedYear}-${formattedMonth}-${formattedDay}`;
+  }
+
+  onSubmitRegister2(data: any){
+    if(!this.otpValue) return;
+    if(this.otpValue ==  this.otp.toString()){
+      this.nextStep();
+    }else{
+      this.showError = true;
+    }
+  }
+
+  onSubmitRegister3(formData:any){
+    const data = {
+      email: this.user.email,
+      password: this.user.password,
+      displayName: this.user.displayName,
+      dob: this.user.dob,
+      username: this.user.username
+    }
+    if(!this.user.password) return;
+    this.userService.registerUser(data).subscribe(
+      (response) => {
+        if(response.message == 'Account created'){
+          this.closeModal()
+          this.redirectToHome()
+        }else{
+          this.alerts.push({
+            type: 'info',
+            msg: 'Server error',
+            timeout: 3000
+          });
+        }
+      }
+    )
+  }
 
 }

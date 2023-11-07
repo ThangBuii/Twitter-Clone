@@ -265,3 +265,10 @@ p{
     cursor: default; /* Show a "not-allowed" cursor */
 }
 
+.error-line {
+    display: block;
+    margin-top: 5px;
+    color: red;
+    padding-bottom: 2px;
+}
+

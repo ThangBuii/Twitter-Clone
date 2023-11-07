@@ -15,29 +15,28 @@
         </div>
         <div class="btns">
             <div class="create-account">
-                <button class="create" (click)="openRegisterModal(templateCreate); nextStep()">Create Account</button>
+                <button class="create" (click)="setCurrentModal('register');openModal(templateModal); nextStep()">Create
+                    Account</button>
                 <p>By signing up, you agree to <span>the Terms of Service</span>
                     and <span>Privacy Policy</span>, including <span>Use of Cookies</span>.</p>
 
             </div>
             <div class="sign-in">
                 <p>Already have an account?</p>
-                <button class="login" (click)="openLoginModal(templateLogin); nextStep()">Log in</button>
+                <button class="login" (click)="setCurrentModal('login'); openModal(templateModal); nextStep()">Log
+                    in</button>
             </div>
         </div>
     </div>
 
 </div>
 
-
-
-
-<ng-template #templateLogin class="login-modal">
-    <ng-container *ngIf="currentStep === 1">
+<ng-template #templateModal class="login-modal">
+    <ng-container *ngIf="currentModal === 'login'">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="btn-close custom-btn-close" aria-label="Close"
-                    (click)="closeLoginModal(); resetStep()">
+                    (click)="closeModal(); resetStep()">
                     <span aria-hidden="true" class="visually-hidden icon-x">&times;</span>
                 </button>
                 <div class="icon-x">
@@ -50,182 +49,228 @@
                 <div class="hidden">
                 </div>
             </div>
-            <div class="modal-body">
-                <div class="login-form">
-                    <h1>Sign in to X</h1>
+            <ng-container *ngIf="currentStep === 1">
+                <div class="modal-body">
+                    <div class="login-form">
+                        <h1>Sign in to X</h1>
 
-                    <form #formLogin1="ngForm" (ngSubmit)="onSubmitLogin1(formLogin1.value)">
-                        <div class="form-floating">
-                            <input type="text" id="email" name="email" class="form-control" required
-                                [(ngModel)]="user.email" placeholder="place email here">
-                            <label for="email" class="form-label">Email or username</label>
-                            <button type="submit" class="next">Next</button>
-                            <button class="btn-forgot">Forgot password?</button>
-                            <p class="create-account" (click)="closeLoginModal();nextStep(); openRegisterModal(templateCreate);">Do not have an account?
+                        <form #formLogin1="ngForm" (ngSubmit)="onSubmitLogin1(formLogin1.value)">
+                            <div class="form-floating">
+                                <input type="text" id="email" name="email" class="form-control" required
+                                    [(ngModel)]="user.email" placeholder="place email here">
+                                <label for="email" class="form-label">Email or username</label>
+                                <button type="submit" class="next">Next</button>
+                                <button class="btn-forgot">Forgot password?</button>
+                                <p class="create-account"
+                                    (click)="resetStep(); nextStep(); setCurrentModal('register')">Do not have
+                                    an account?
+                                    <span>Register</span>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div *ngFor="let alert of alerts">
+                    <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">{{
+                        alert.msg
+                        }}</alert>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="currentStep === 2">
+                <div class="modal-body">
+                    <div class="login-form">
+
+                        <h1>Enter your password </h1>
+
+                        <form #formLogin2="ngForm" (ngSubmit)="onSubmitLogin2(formLogin2.value)">
+                            <div class="form-floating">
+                                <input type="email" class="form-control readonly-input" id="email" placeholder="email"
+                                    [value]="user.email" readonly>
+                                <label for="email">{{usernameOrEmailLabel}}</label>
+                            </div>
+                            <div class="form-floating">
+                                <input type="password" name="password" id="password" class="form-control"
+                                    placeholder="place password here" [(ngModel)]="user.password">
+                                <label for="password" class="form-label">Password</label>
+                            </div>
+                            <p class="create-account"><span>Forgot password?</span></p>
+
+                            <button type="submit" class="btn btn-secondary custom-login"
+                                [disabled]="user.password.length===0">Log in</button>
+
+                            <p class="create-account" (click)="resetStep(); nextStep(); setCurrentModal('register')">Do
+                                not
+                                have an account?
                                 <span>Register</span>
                             </p>
+                        </form>
+                        <div *ngFor="let alert of alerts">
+                            <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">
+                                {{
+                                alert.msg
+                                }}</alert>
                         </div>
-                    </form>
+                    </div>
+
                 </div>
-            </div>
-            <div *ngFor="let alert of alerts">
-                <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">{{ alert.msg
-                    }}</alert>
-            </div>
+            </ng-container>
         </div>
     </ng-container>
-    <ng-container *ngIf="currentStep === 2">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn-close custom-btn-close" aria-label="Close"
-                    (click)="closeLoginModal(); resetStep()">
-                    <span aria-hidden="true" class="visually-hidden icon-x">&times;</span>
-                </button>
-                <div class="icon-x">
-                    <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path
-                            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z">
-                        </path>
-                    </svg>
+    <ng-container *ngIf="currentModal === 'register'">
+        <ng-container *ngIf="currentStep === 1">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Step 1/3</h5>
+                    <button type="button" class="btn-close" (click)="closeModal(); resetStep()"
+                        data-bs-dismiss="modal"></button>
                 </div>
-                <div class="hidden">
-                </div>
-            </div>
-            <div class="modal-body">
-                <div class="login-form">
-                    
-                    <h1>Enter your password </h1>
-
-                    <form #formLogin2="ngForm" (ngSubmit)="onSubmitLogin2(formLogin2.value)">
+                <div class="modal-body">
+                    <h2 class="mb-4">Create your account</h2>
+                    <form #formRegister1="ngForm" (ngSubmit)="onSubmitRegister1(formRegister1.value)">
                         <div class="form-floating">
-                            <input type="email" class="form-control readonly-input" id="email" placeholder="email"
-                                [value]="user.email" readonly>
-                            <label for="email">{{usernameOrEmailLabel}}</label>
+                            <input type="text" id="displayName" name="displayName" [(ngModel)]="user.displayName"
+                                class="form-control" placeholder="place email here" required minlength="5"
+                                #name="ngModel">
+                            <label for="displayName" class="form-label">Name</label>
+                            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="error-line">
+                                <div *ngIf="name.errors?.['required']">
+                                    Name is required.
+                                </div>
+                                <div *ngIf="name.errors?.['minlength']">
+                                    Name must be at least 5 characters long.
+                                </div>
+                            </div>
                         </div>
                         <div class="form-floating">
-                            <input type="password" name="password" id="password" class="form-control"
-                                placeholder="place password here" [(ngModel)]="user.password">
-                            <label for="password" class="form-label">Password</label>
+                            <input type="email" name="email" id="email" class="form-control" required
+                                placeholder="place email here" [(ngModel)]="user.email" #emailModel="ngModel" email>
+                            <label for="email" class="form-label">Email</label>
+                            <div *ngIf="emailModel.invalid && (emailModel.dirty || emailModel.touched)"
+                                class="error-line">
+                                <div *ngIf="emailModel.errors?.['required']">
+                                    Email is required.
+                                </div>
+                                <div *ngIf="emailModel.errors?.['email']">
+                                    Please enter a valid email.
+                                </div>
+                            </div>
                         </div>
-                        <p class="create-account"><span>Forgot password?</span></p>
 
-                        <button type="submit" class="btn btn-secondary custom-login"
-                            [disabled]="user.password.length===0">Log in</button>
+                        <p class="mt-3">Birth Date</p>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-floating mb-3">
+                                    <select id="month" name="month" [(ngModel)]="dob.month" class="form-control"
+                                        required #monthSelect="ngModel">
+                                        <option value="" selected disabled hidden></option>
+                                        <option *ngFor="let month of monthArray" [value]="month.id">{{ month.value }}
+                                        </option>
+                                    </select>
+                                    <label for="month">Month</label>
+                                    <div *ngIf="monthSelect.invalid && (monthSelect.pristine || monthSelect.untouched)"
+                                        class="error-line">
+                                        Month is required.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating mb-3">
+                                    <select id="day" name="day" [(ngModel)]="dob.day" class="form-control" required
+                                        #daySelect="ngModel">
+                                        <option value="" selected disabled hidden></option>
+                                        <option *ngFor="let day of dayArray">{{day}}</option>
+                                    </select>
+                                    <label for="day">Day</label>
+                                    <div *ngIf="daySelect.invalid && (daySelect.dirty || daySelect.touched)"
+                                        class="error-line">
+                                        Day is required.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating mb-3">
+                                    <select id="year" name="year" [(ngModel)]="dob.year" class="form-control" required
+                                        #yearSelect="ngModel">
+                                        <option value="" selected disabled hidden></option>
+                                        <option *ngFor="let year of yearArray">{{year}}</option>
+                                    </select>
+                                    <label for="year">Year</label>
+                                    <div *ngIf="yearSelect.invalid && (yearSelect.dirty || yearSelect.touched)"
+                                        class="error-line">
+                                        Year is required.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                        <p class="create-account" (click)="closeLoginModal(); openRegisterModal(templateCreate)">Do not have an account?
-                            <span>Register</span>
-                        </p>
+
+                        <button type="submit" class="next" [disabled]="formRegister1.invalid">Next</button>
                     </form>
                     <div *ngFor="let alert of alerts">
-                        <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">{{ alert.msg
+                        <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">
+                            {{
+                            alert.msg
                             }}</alert>
                     </div>
                 </div>
-                  
-            </div>
-            
-        </div>
-    </ng-container>
-
-</ng-template>
-
-<ng-template #templateCreate>
-    <ng-container *ngIf="currentStep === 1">
-
-
-
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Step 1/3</h5>
-                <button type="button" class="btn-close" (click)="closeRegisterModal(); resetStep()"
-                    data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <h2 class="mb-4">Create your account</h2>
-                <form action="">
-                    <div class="form-floating">
-                        <input type="text" id="email" class="form-control" placeholder="place email here">
-                        <label for="email" class="form-label">Username</label>
-                    </div>
-                    <div class="form-floating">
-                        <input type="email" name="email" id="email" class="form-control" placeholder="place email here"
-                            [(ngModel)]="user.email">
-                        <label for="email" class="form-label">Email</label>
-                    </div>
-                    <p class="mt-3">Birth Date</p>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-floating mb-3">
-                                <select id="month" class="form-control">
-                                    <!-- Example options -->
-                                    <option value="" selected disabled hidden></option>
-                                    <option *ngFor="let month of monthArray" [value]="month.id">{{ month.value }}
-                                    </option>
-                                </select>
-                                <label for="month">Month</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-floating mb-3">
-                                <select id="day" class="form-control">
-                                    <!-- Example options -->
-                                    <option value="" selected disabled hidden></option>
-                                    <option *ngFor="let day of dayArray">{{day}}</option>
-                                </select>
-                                <label for="day">Day</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-floating mb-3">
-                                <select id="year" class="form-control">
-                                    <!-- Example options -->
-                                    <option value="" selected disabled hidden></option>
-                                    <option *ngFor="let year of yearArray">{{year}}</option>
-                                </select>
-                                <label for="year">Year</label>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </form>
-                <button type="button" class="next" (click)="nextStep()">Next</button>
-            </div>
-
-        </div>
-    </ng-container>
-    <ng-container *ngIf="currentStep === 2">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Step 2/3</h5>
-                <button type="button" class="btn-close" (click)="closeRegisterModal(); resetStep()"
-                    data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <h2 class="mb-4">We have sent you an OTP</h2>
-                <input type="text" class="form-control mb-3" placeholder="OTP">
-                <button class="next" (click)="nextStep()">Next</button>
-            </div>
-        </div>
-    </ng-container>
-    <ng-container *ngIf="currentStep === 3">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Step 3/3</h5>
 
             </div>
-            <div class="modal-body">
-                <h2 class="mb-4">You will need a password</h2>
-                <p class="">Make sure the password has 8 characters or more</p>
-                <div class="form-floating">
-                    <input type="password" name="password" id="password" class="form-control"
-                        placeholder="place password here" [(ngModel)]="user.password">
-                    <label for="password" class="form-label">Password</label>
+        </ng-container>
+        <ng-container *ngIf="currentStep === 2">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Step 2/3</h5>
+                    <button type="button" class="btn-close" (click)="closeModal(); resetStep()"
+                        data-bs-dismiss="modal"></button>
                 </div>
-                <button class="next" (click)="closeRegisterModal();resetStep();redirectToHome()">Next</button>
+                <div class="modal-body">
+                    <h2 class="mb-4">We have sent you an OTP</h2>
+                    <form #formRegister2="ngForm" (ngSubmit)="onSubmitRegister2(formRegister2.value)">
+                        <input type="text" name="otp" id="otp" [(ngModel)]="otpValue" class="form-control mb-3"
+                            placeholder="OTP">
+                        <button type="submit" class="next">Next</button>
+                        <div [hidden]="!showError" class="error-line">
+                            OTP is wrong
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+        </ng-container>
+        <ng-container *ngIf="currentStep === 3">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Step 3/3</h5>
+
+                </div>
+                <div class="modal-body">
+                    <h2 class="mb-4">You will need a password</h2>
+                    <p class="">Make sure the password has 8 characters or more</p>
+                    <form #formRegister3="ngForm" (ngSubmit)="onSubmitRegister3(formRegister3.value)">
+                        <div class="form-floating">
+                            <input type="password" name="password" id="password" class="form-control"
+                                placeholder="place password here" minlength="8" required #password="ngModel" [(ngModel)]="user.password">
+                            <label for="password" class="form-label">Password</label>
+                            <div *ngIf="password.invalid && (password.dirty || password.touched)" class="error-line">
+                                <div *ngIf="password.errors?.['required']">
+                                    Password is required.
+                                </div>
+                                <div *ngIf="password.errors?.['minlength']">
+                                    Password must be at least 8 characters long.
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-secondary custom-login"
+                            [disabled]="user.password.length===0">Next</button>
+                    </form>
+                    <div *ngFor="let alert of alerts">
+                        <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">
+                            {{
+                            alert.msg
+                            }}</alert>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
     </ng-container>
 </ng-template>
-
->
