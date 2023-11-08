@@ -1,6 +1,5 @@
 package com.thang.backend.controller;
 
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +14,8 @@ import com.thang.backend.dto.User.AuthenticationRequest;
 import com.thang.backend.dto.User.CheckEmailRequest;
 import com.thang.backend.dto.User.CheckEmailResponse;
 import com.thang.backend.dto.User.OtpRequest;
+import com.thang.backend.dto.User.RecommendUsernameRequest;
+import com.thang.backend.dto.User.RecommendUsernameResponse;
 import com.thang.backend.dto.User.RegisterRequest;
 import com.thang.backend.exception.CustomException;
 import com.thang.backend.service.UserService;
@@ -92,6 +93,12 @@ public class UserController {
     @PostMapping("user/checkAccountExists")
     public ResponseEntity<CheckEmailResponse> checkAccountExists(@RequestBody CheckEmailRequest info){
         CheckEmailResponse res = userService.checkAccountExists(info);
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("user/generateUsername")
+    public ResponseEntity<RecommendUsernameResponse> generateRecommendUsername(@RequestBody RecommendUsernameRequest info){
+        RecommendUsernameResponse res = userService.generateUsernames(info);
         return ResponseEntity.ok(res);
     }
 }

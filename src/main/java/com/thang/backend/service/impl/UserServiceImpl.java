@@ -1,6 +1,8 @@
 package com.thang.backend.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +17,8 @@ import com.thang.backend.dto.User.AuthenticationRequest;
 import com.thang.backend.dto.User.CheckEmailRequest;
 import com.thang.backend.dto.User.CheckEmailResponse;
 import com.thang.backend.dto.User.OtpRequest;
+import com.thang.backend.dto.User.RecommendUsernameRequest;
+import com.thang.backend.dto.User.RecommendUsernameResponse;
 import com.thang.backend.dto.User.RegisterRequest;
 import com.thang.backend.entity.Role;
 import com.thang.backend.entity.User;
@@ -35,7 +39,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AuthenticationResponse register(RegisterRequest request) {
-        User user = User.builder().email(request.getEmail()).username(request.getUsername()).displayName(request.getDisplayName())
+        User user = User.builder().email(request.getEmail()).username(request.getUsername())
+                .displayName(request.getDisplayName())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER).dob(request.getDob()).registrationDate(new Date(System.currentTimeMillis())).build();
         userRepository.save(user);
@@ -89,6 +94,43 @@ public class UserServiceImpl implements UserService {
         CheckEmailResponse response = new CheckEmailResponse();
         response.setEmailExist(userRepository.existsByEmail(info.getEmail()));
         return response;
+    }
+
+    @Override
+    public RecommendUsernameResponse generateUsernames(RecommendUsernameRequest info) {
+        String name = info.getName();
+        String dob = info.getDob();
+
+        List<String> usernames = new ArrayList<>();
+
+        String firstLetter = name.substring(0, 1);
+        String year = dob.substring(0, 4);
+        String month = dob.substring(5, 7);
+        String day = dob.substring(8, 10);
+
+        int counter = 0;
+        String patterns[] = { firstLetter + year, firstLetter + month + day, name + year, name + month + day };
+        while (true) {
+            for (int i = 0; i < 4; i++) {
+                String username = "";
+                if(counter == 0){
+                    username = patterns[i];
+                }else{
+                    username = patterns[i] + counter;
+                }
+                if (!userRepository.existsByUsername(username) && usernames.size()<6) {
+                    usernames.add(username);
+                }else{
+                    break;
+                }
+            }
+            if(usernames.size()>=6){
+                break;
+            }
+            counter++;
+        }
+
+        return RecommendUsernameResponse.builder().generatedUsernames(usernames).build();
     }
 
 }
