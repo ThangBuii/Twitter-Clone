@@ -1,10 +1,11 @@
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Inject, Output, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertComponent } from 'ngx-bootstrap/alert';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Observable } from 'rxjs';
 import { ModalService } from 'src/app/services/modal.service';
 import { UserServiceService } from 'src/app/services/user-service.service';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-modal',
@@ -12,10 +13,19 @@ import { UserServiceService } from 'src/app/services/user-service.service';
   styleUrls: ['./modal.component.css']
 })
 export class ModalComponent {
+
+  //Bien observable de update modal
   currentModal?: Observable<string>;
   currentStep?: Observable<number>;
   showModal?: Observable<boolean>;
-  @ViewChild('content') content: any;
+  modalType: string = '';
+  modalStep: number = 1;
+  @Output() closeRequest = new EventEmitter<void>();
+
+ 
+  @ViewChild('content') content!: TemplateRef<any>;
+
+  //User vs DOB 
   user = {
     password: '',
     email: '',
@@ -23,7 +33,6 @@ export class ModalComponent {
     dob: '',
     username: ''
   }
-  showError = false;
   otp = 0
   otpValue = ''
   dob = {
@@ -31,6 +40,8 @@ export class ModalComponent {
     month: 0,
     year: 0,
   }
+  //Error va alert
+  showError = false;
   alerts: any[] = [{
     type: '',
     msg: ``,
@@ -54,9 +65,7 @@ export class ModalComponent {
     { id: 11, value: 'November' },
     { id: 12, value: 'December' }
   ];
-
-
-
+  
   constructor(
     private router: Router,
     private userService: UserServiceService,
@@ -72,12 +81,14 @@ export class ModalComponent {
     this.alerts = this.alerts.filter(alert => alert !== dismissedAlert);
   }
 
+
   openModal(modalType: string) {
     this.modalService.openModal(modalType)
   }
 
   closeModal() {
     this.modalService.closeModal();
+    this.closeRequest.emit();
   }
 
   setCurrentModal(modal: string) {
@@ -119,6 +130,12 @@ export class ModalComponent {
     for (let year = currentYear; year >= currentYear - yearsInPast; year--) {
       this.yearArray.push(year);
     }
+    this.currentModal?.subscribe((type) => {
+      this.modalType = type;
+    });
+    this.currentStep?.subscribe((type) => {
+      this.modalStep = type;
+    });
   }
 
   redirectToHome() {
@@ -152,8 +169,6 @@ export class ModalComponent {
     );
   }
 
-
-
   onSubmitLogin2(formData: any) {
     const data = {
       username: this.user.email,
@@ -167,6 +182,7 @@ export class ModalComponent {
         if (response.message === "Login successful") {
           // The response is "Login successful", do something here
           this.closeModal();
+          this.redirectToHome();
         } else {
           this.alerts.push({
             type: 'info',

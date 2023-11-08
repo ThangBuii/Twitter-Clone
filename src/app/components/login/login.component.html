@@ -23,10 +23,11 @@
             </div>
             <div class="sign-in">
                 <p>Already have an account?</p>
-                <button class="login" (click)="openModal('login')" >Log
+                <button class="login" (click)="openModal('login')">Log
                     in</button>
             </div>
+            <app-modal (closeRequest)="onCloseRequested()" #myModal></app-modal>
         </div>
     </div>
-</div>
 
+</div>

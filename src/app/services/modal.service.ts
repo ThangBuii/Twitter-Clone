@@ -19,12 +19,13 @@ export class ModalService {
     this.showModalSubject.next(true);
     this.currentModalSubject.next(modalType)
     this.currentStepSubject.next(1);
+    console.log(modalType)
   }
 
-  closeModal() {
-    this.showModalSubject.next(false);
-    this.resetSteps();
-  }
+    closeModal() {
+      this.showModalSubject.next(false);
+      this.resetSteps();
+    }
 
   setCurrentModal(modelType: string){
     this.currentModalSubject.next(modelType)
