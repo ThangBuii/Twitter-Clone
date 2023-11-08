@@ -31,6 +31,15 @@ interface registerRequest{
   dob : string
 }
 
+interface generateUsernameRequest{
+  name: string,
+  dob: string
+}
+
+interface generateUsernameResponse{
+  generatedUsernames: string[]
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -40,6 +49,7 @@ export class UserServiceService {
   private sendOTP = 'http://localhost:8080/api/v1/auth/user/otp'
   private checkUsername = 'http://localhost:8080/api/v1/auth/user/checkUsername'
   private checkUsernameAndEmailExists = 'http://localhost:8080/api/v1/auth/user/checkAccountExists'
+  private generatedUsername = 'http://localhost:8080/api/v1/auth/user/generateUsername'
   constructor( private http:HttpClient) {}
 
   registerUser(data: registerRequest): Observable<messageResponse>{
@@ -61,6 +71,10 @@ export class UserServiceService {
 
   checkUsernameAndEmailUser(info:checkEmailRequest) : Observable<checkEmailResponse>{
     return this.http.post<checkEmailResponse>(this.checkUsernameAndEmailExists,info)
+  }
+
+  generateUsernameUser(info:generateUsernameRequest) : Observable<generateUsernameResponse>{
+    return this.http.post<generateUsernameResponse>(this.generatedUsername,info)
   }
 
 }

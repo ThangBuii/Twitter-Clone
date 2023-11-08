@@ -12,7 +12,6 @@ import { AlertModule } from 'ngx-bootstrap/alert';
 import { ModalComponent } from './components/modal/modal.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
 import { MatDialogModule } from '@angular/material/dialog';
-import { ExampleComponent } from './components/example/example.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +19,6 @@ import { ExampleComponent } from './components/example/example.component';
     LoginComponent,
     HomeComponent,
     ModalComponent,
-    ExampleComponent
   ],
   imports: [
     BrowserModule,

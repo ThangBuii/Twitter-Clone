@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable({
@@ -8,32 +9,38 @@ export class ModalService {
   private showModalSubject = new BehaviorSubject<boolean>(false);
   private currentStepSubject = new BehaviorSubject<number>(1);
   private currentModalSubject = new Subject<string>;
+  private modalRef: any;
 
   showModal$ = this.showModalSubject.asObservable();
   currentStep$ = this.currentStepSubject.asObservable();
   currentModal$ = this.currentModalSubject.asObservable();
 
-  constructor() { }
+  constructor(private modalService: NgbModal) { }
 
-  openModal(modalType: string) {
+  initateModal(modalType: string) {
     this.showModalSubject.next(true);
     this.currentModalSubject.next(modalType)
     this.currentStepSubject.next(1);
-    console.log(modalType)
+  }
+  openModal(content: any) {
+    this.modalRef = this.modalService.open(content, { backdrop: 'static' });
+  }
+  closeModal() {
+    if (this.modalRef) {
+      this.modalRef.close();
+      this.modalRef = null;
+      this.showModalSubject.next(false);
+      this.resetSteps(); // Clear the reference when closed
+    }
   }
 
-    closeModal() {
-      this.showModalSubject.next(false);
-      this.resetSteps();
-    }
-
-  setCurrentModal(modelType: string){
+  setCurrentModal(modelType: string) {
     this.currentModalSubject.next(modelType)
   }
 
-  nextStep(){
+  nextStep() {
     const currentStep = this.currentStepSubject.value;
-    this.setCurrentStep(currentStep+1)
+    this.setCurrentStep(currentStep + 1)
   }
 
   setCurrentStep(step: number) {

@@ -1,11 +1,10 @@
-import { Component, EventEmitter, Inject, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output, TemplateRef, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertComponent } from 'ngx-bootstrap/alert';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { Observable } from 'rxjs';
+import { Observable, Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { ModalService } from 'src/app/services/modal.service';
 import { UserServiceService } from 'src/app/services/user-service.service';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-modal',
@@ -20,9 +19,8 @@ export class ModalComponent {
   showModal?: Observable<boolean>;
   modalType: string = '';
   modalStep: number = 1;
-  @Output() closeRequest = new EventEmitter<void>();
 
- 
+
   @ViewChild('content') content!: TemplateRef<any>;
 
   //User vs DOB 
@@ -42,12 +40,14 @@ export class ModalComponent {
   }
   //Error va alert
   showError = false;
+  showSuccess = false;
   alerts: any[] = [{
     type: '',
     msg: ``,
     timeout: 5000
   }];
   usernameOrEmailLabel = ''
+  generatedUsernames: string[] = ['thang11121', 'thagna32rfa', 'aasdfarga', 'asfdafaf', '132123fasdfthagn'];
 
   yearArray: number[] = [];
   dayArray: number[] = [];
@@ -65,12 +65,16 @@ export class ModalComponent {
     { id: 11, value: 'November' },
     { id: 12, value: 'December' }
   ];
-  
+
+  usernameInput: string = '';
+  private userInputSubject = new Subject<string>();
+  isUsernameAvailable = false;
+
   constructor(
     private router: Router,
     private userService: UserServiceService,
     private modalService: ModalService,
-    ) {
+  ) {
     this.currentModal = this.modalService.currentModal$;
     this.currentStep = this.modalService.currentStep$;
     this.showModal = this.modalService.showModal$;
@@ -88,7 +92,7 @@ export class ModalComponent {
 
   closeModal() {
     this.modalService.closeModal();
-    this.closeRequest.emit();
+    this.resetStep();
   }
 
   setCurrentModal(modal: string) {
@@ -130,11 +134,17 @@ export class ModalComponent {
     for (let year = currentYear; year >= currentYear - yearsInPast; year--) {
       this.yearArray.push(year);
     }
+
+    //Initial subscribe to modalType and modalStep
     this.currentModal?.subscribe((type) => {
       this.modalType = type;
     });
-    this.currentStep?.subscribe((type) => {
-      this.modalStep = type;
+    this.currentStep?.subscribe((step) => {
+      this.modalStep = step;
+    });
+
+    this.userInputSubject.pipe(debounceTime(500)).subscribe(() => {
+      this.checkInput();
     });
   }
 
@@ -181,7 +191,7 @@ export class ModalComponent {
       (response) => {
         if (response.message === "Login successful") {
           // The response is "Login successful", do something here
-          this.closeModal();
+
           this.redirectToHome();
         } else {
           this.alerts.push({
@@ -266,24 +276,58 @@ export class ModalComponent {
 
   onSubmitRegister3(formData: any) {
     const data = {
-      email: this.user.email,
-      password: this.user.password,
-      displayName: this.user.displayName,
-      dob: this.user.dob,
-      username: this.user.username
+      name: this.user.displayName,
+      dob: this.user.dob
     }
     if (!this.user.password) return;
+    this.userService.generateUsernameUser(data).subscribe(
+      (response) => {
+        this.generatedUsernames = response.generatedUsernames;
+        this.nextStep()
+        this.redirectToHome()
+      },
+      (error) => {
+        console.log(error);
+      }
+
+    )
+  }
+
+  onInputChange() {
+    // Push the current userInput value into the subject
+    this.userInputSubject.next(this.user.username);
+  }
+  checkInput() {
+
+    this.userService.checkUsernameUser(this.user.username).subscribe(
+      (response) => {
+        if(response === true){
+          this.showError = true;
+          this.isUsernameAvailable = false;
+          this.showSuccess = false;
+        }else{
+          this.showError = false;
+          this.isUsernameAvailable = true;
+          this.showSuccess = true;
+        }
+      }
+    )
+  }
+
+  onSubmitRegister4(formData: any) {
+    const data = {
+      email: this.user.email,
+      password: this.user.password,
+      username: this.user.username,
+      displayName: this.user.displayName,
+      dob: this.user.displayName
+    }
+
+    if (!this.user.username) return
     this.userService.registerUser(data).subscribe(
       (response) => {
-        if (response.message == 'Account created') {
-          this.closeModal()
-          this.redirectToHome()
-        } else {
-          this.alerts.push({
-            type: 'info',
-            msg: 'Server error',
-            timeout: 3000
-          });
+        if (response.message === "Account created") {
+          this.nextStep();
         }
       }
     )
