@@ -45,8 +45,9 @@ public class UserController {
 
             Cookie jwtCookie = new Cookie("JWT_TOKEN", token.getToken());
             jwtCookie.setHttpOnly(true);
-            jwtCookie.setSecure(true); // In production, use HTTPS
-
+            jwtCookie.setSecure(true);
+            jwtCookie.setPath("/");
+            jwtCookie.setMaxAge(900);
             response.addCookie(jwtCookie);
 
             // Return a 201 Created response for successful registration
@@ -64,8 +65,9 @@ public class UserController {
 
             Cookie jwtCookie = new Cookie("JWT_TOKEN", token.getToken());
             jwtCookie.setHttpOnly(true);
-            jwtCookie.setSecure(true); // In production, use HTTPS
-
+            jwtCookie.setSecure(true);
+            jwtCookie.setPath("/");
+            jwtCookie.setMaxAge(60 * 60 * 24);
             response.addCookie(jwtCookie);
 
             // Return a 201 Created response for successful registration
@@ -117,5 +119,16 @@ public class UserController {
         UserProfileResponse res = userService.getUserProfile(username);
 
         return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<?> logOut(HttpServletResponse res) {
+        Cookie jwtCookie = new Cookie("JWT_TOKEN", null);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setSecure(true);
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge(0);
+        res.addCookie(jwtCookie);
+        return ResponseEntity.ok(Message.builder().message("Logout successful").build());
     }
 }
