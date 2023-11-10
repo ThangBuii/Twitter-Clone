@@ -20,8 +20,10 @@ import com.thang.backend.dto.User.OtpRequest;
 import com.thang.backend.dto.User.RecommendUsernameRequest;
 import com.thang.backend.dto.User.RecommendUsernameResponse;
 import com.thang.backend.dto.User.RegisterRequest;
+import com.thang.backend.dto.User.UserProfileResponse;
 import com.thang.backend.entity.Role;
 import com.thang.backend.entity.User;
+import com.thang.backend.model.mapper.UserMapper;
 import com.thang.backend.repository.UserRepository;
 import com.thang.backend.service.UserService;
 
@@ -36,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
+    private final UserMapper userMapper;
 
     @Override
     public AuthenticationResponse register(RegisterRequest request) {
@@ -131,6 +134,14 @@ public class UserServiceImpl implements UserService {
         }
 
         return RecommendUsernameResponse.builder().generatedUsernames(usernames).build();
+    }
+
+    @Override
+    public UserProfileResponse getUserProfile(String username) {
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        return userMapper.toUserProfile(user);
     }
 
 }

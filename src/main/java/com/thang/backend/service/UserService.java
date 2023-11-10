@@ -8,6 +8,7 @@ import com.thang.backend.dto.User.OtpRequest;
 import com.thang.backend.dto.User.RecommendUsernameRequest;
 import com.thang.backend.dto.User.RecommendUsernameResponse;
 import com.thang.backend.dto.User.RegisterRequest;
+import com.thang.backend.dto.User.UserProfileResponse;
 
 
 public interface UserService {
@@ -25,5 +26,7 @@ public interface UserService {
     CheckEmailResponse checkAccountExists(CheckEmailRequest info);
 
     RecommendUsernameResponse generateUsernames(RecommendUsernameRequest info);
+
+    UserProfileResponse getUserProfile(String username);
     
 }

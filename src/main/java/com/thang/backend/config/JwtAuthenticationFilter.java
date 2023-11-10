@@ -13,6 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -35,66 +36,66 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         final String jwt;
         final String username;
 
-        // Cookie[] cookies = request.getCookies();
-        // Cookie jwtCookie = null;
-        // if (cookies != null) {
-        //     for (Cookie cookie : cookies) {
-        //         if ("JWT-TOKEN".equals(cookie.getName())) {
-        //             jwtCookie = cookie;
-        //             break;
-        //         }
-        //     }
-        // }
+        Cookie[] cookies = request.getCookies();
+        Cookie jwtCookie = null;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("JWT-TOKEN".equals(cookie.getName())) {
+                    jwtCookie = cookie;
+                    break;
+                }
+            }
+        }
     
-        // if (jwtCookie == null) {
-        //     filterChain.doFilter(request, response);
-        //     return;
-        // }
+        if (jwtCookie == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
     
-        // jwt = jwtCookie.getValue();
-        // username = jwtService.extractUsername(jwt);
+        jwt = jwtCookie.getValue();
+        username = jwtService.extractUsername(jwt);
     
-        // if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-        //     UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-        //     if (jwtService.isTokenValid(jwt, userDetails)) {
-        //         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-        //                 userDetails,
-        //                 null,
-        //                 userDetails.getAuthorities()
-        //         );
-        //         authToken.setDetails(
-        //                 new WebAuthenticationDetailsSource().buildDetails(request)
-        //         );
-        //         SecurityContextHolder.getContext().setAuthentication(authToken);
-        //     }
-        // }
-        // filterChain.doFilter(request, response);
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            if (jwtService.isTokenValid(jwt, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+                authToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
+        filterChain.doFilter(request, response);
 
         // if(cookies != null){
             
         // }
 
-        if(authHeader == null  || !authHeader.startsWith("Bearer ")){
-            filterChain.doFilter(request, response);
-            return;
-        }
+        // if(authHeader == null  || !authHeader.startsWith("Bearer ")){
+        //     filterChain.doFilter(request, response);
+        //     return;
+        // }
 
-        jwt = authHeader.substring(7);
-        username = jwtService.extractUsername(jwt);
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username); 
-            if(jwtService.isTokenValid(jwt, userDetails)){
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-                );
-                authToken.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
-        }
+        // jwt = authHeader.substring(7);
+        // username = jwtService.extractUsername(jwt);
+        // if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+        //     UserDetails userDetails = this.userDetailsService.loadUserByUsername(username); 
+        //     if(jwtService.isTokenValid(jwt, userDetails)){
+        //         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+        //             userDetails,
+        //             null,
+        //             userDetails.getAuthorities()
+        //         );
+        //         authToken.setDetails(
+        //             new WebAuthenticationDetailsSource().buildDetails(request)
+        //         );
+        //         SecurityContextHolder.getContext().setAuthentication(authToken);
+        //     }
+        // }
         filterChain.doFilter(request, response);
     }
     

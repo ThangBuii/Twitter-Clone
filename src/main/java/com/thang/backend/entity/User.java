@@ -68,6 +68,13 @@ public class User implements UserDetails {
     @Column(name = "Role")
     private Role role;
 
+    @Column(name = "Followers")
+    private int followers;
+    
+    
+    @Column(name = "Followings")
+    private int followings;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

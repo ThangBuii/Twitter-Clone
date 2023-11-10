@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-    
+import org.springframework.web.util.WebUtils;
+
+import com.thang.backend.config.JwtService;
 import com.thang.backend.dto.Message;
 import com.thang.backend.dto.User.AuthenticationRequest;
 import com.thang.backend.dto.User.CheckEmailRequest;
@@ -17,10 +19,12 @@ import com.thang.backend.dto.User.OtpRequest;
 import com.thang.backend.dto.User.RecommendUsernameRequest;
 import com.thang.backend.dto.User.RecommendUsernameResponse;
 import com.thang.backend.dto.User.RegisterRequest;
+import com.thang.backend.dto.User.UserProfileResponse;
 import com.thang.backend.exception.CustomException;
 import com.thang.backend.service.UserService;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final UserService userService;
+    private final JwtService jwtService;
 
     // add validation
 
@@ -53,7 +58,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Message> login(@RequestBody AuthenticationRequest request,HttpServletResponse response) {
+    public ResponseEntity<Message> login(@RequestBody AuthenticationRequest request, HttpServletResponse response) {
         try {
             var token = userService.login(request);
 
@@ -91,14 +96,26 @@ public class UserController {
     }
 
     @PostMapping("user/checkAccountExists")
-    public ResponseEntity<CheckEmailResponse> checkAccountExists(@RequestBody CheckEmailRequest info){
+    public ResponseEntity<CheckEmailResponse> checkAccountExists(@RequestBody CheckEmailRequest info) {
         CheckEmailResponse res = userService.checkAccountExists(info);
         return ResponseEntity.ok(res);
     }
 
     @PostMapping("user/generateUsername")
-    public ResponseEntity<RecommendUsernameResponse> generateRecommendUsername(@RequestBody RecommendUsernameRequest info){
+    public ResponseEntity<RecommendUsernameResponse> generateRecommendUsername(
+            @RequestBody RecommendUsernameRequest info) {
         RecommendUsernameResponse res = userService.generateUsernames(info);
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("user/user-profile")
+    public ResponseEntity<UserProfileResponse> getUserProfile(HttpServletRequest req) {
+        Cookie cookie = WebUtils.getCookie(req, "JWT_TOKEN");
+
+        String token = cookie.getValue();
+        String username = jwtService.extractUsername(token);
+        UserProfileResponse res = userService.getUserProfile(username);
+
         return ResponseEntity.ok(res);
     }
 }
