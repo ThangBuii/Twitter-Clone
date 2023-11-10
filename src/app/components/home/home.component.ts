@@ -12,12 +12,12 @@ export class HomeComponent implements OnInit {
   userInfo?: User
   constructor(private auth: UserServiceService, private router: Router) { }
   ngOnInit(): void {
-    var userData = this.auth.loadUserFromLocalStorage();
-    if(userData.userID === 0){
-      this.redirectToLogin();
-    }else{
-      this.userInfo = userData
-    }
+    // var userData = this.auth.loadUserFromLocalStorage();
+    // if(userData.userID === 0){
+    //   this.redirectToLogin();
+    // }else{
+    //   this.userInfo = userData
+    // }
   }
 
   redirectToLogin() {

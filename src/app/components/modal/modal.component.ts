@@ -150,7 +150,7 @@ export class ModalComponent {
   }
 
   redirectToHome() {
-    this.router.navigate(['/home']);
+    this.router.navigate(['']);
   }
 
   //handle form
