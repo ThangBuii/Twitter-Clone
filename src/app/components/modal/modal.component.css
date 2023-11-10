@@ -108,28 +108,19 @@ p{
     background-color: rgba(29, 155, 240, 0.1);
 }
 
-.custom-modal{
-    height: 90vh;   
-    min-height: 400px;
+.custom-modal-size .modal-dialog {
     max-width: 80vw;
     max-height: 90vh;
-    height: 650px;
-    min-width: 600px;
-    flex-shrink: 1;
-    border-radius: 16px;
-    overflow: hidden;
 }
 
-.modal-content{
-    height: 90vh;   
-    min-height: 400px;
-    max-width: 80vw;
-    max-height: 90vh;
-    height: 650px;
+.custom-modal-size .modal-content {
+    height: 650px; /* Or use min-height if you want it to be able to shrink */
     min-width: 600px;
-    flex-shrink: 1;
     overflow: hidden;
+    border-radius: 16px; /* This will apply to the content area */
+    flex-shrink: 1;
 }
+
 
 
 

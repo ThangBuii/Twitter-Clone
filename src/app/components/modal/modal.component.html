@@ -1,87 +1,86 @@
 <ng-template id="accept" #content>
     <div *ngIf="showModal | async">
         <ng-container *ngIf="modalType === 'login'">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="btn-close custom-btn-close" aria-label="Close" (click)="closeModal()">
-                        <span aria-hidden="true" class="visually-hidden icon-x">&times;</span>
-                    </button>
-                    <div class="icon-x">
-                        <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path
-                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div class="hidden">
-                    </div>
+
+            <div class="modal-header">
+                <button type="button" class="btn-close custom-btn-close" aria-label="Close" (click)="closeModal()">
+                    <span aria-hidden="true" class="visually-hidden icon-x">&times;</span>
+                </button>
+                <div class="icon-x">
+                    <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path
+                            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z">
+                        </path>
+                    </svg>
                 </div>
-                <ng-container *ngIf="modalStep === 1">
-                    <div class="modal-body">
-                        <div class="login-form">
-                            <h1>Sign in to X</h1>
+                <div class="hidden">
+                </div>
+            </div>
+            <ng-container *ngIf="modalStep === 1">
+                <div class="modal-body">
+                    <div class="login-form">
+                        <h1>Sign in to X</h1>
 
-                            <form #formLogin1="ngForm" (ngSubmit)="onSubmitLogin1(formLogin1.value)">
-                                <div class="form-floating">
-                                    <input type="text" id="email" name="email" class="form-control" required
-                                        [(ngModel)]="user.email" placeholder="place email here">
-                                    <label for="email" class="form-label">Email or username</label>
-                                    <button type="submit" class="next">Next</button>
-                                    <button class="btn-forgot">Forgot password?</button>
-                                    <p class="create-account" (click)="openModal('register')">Do not have
-                                        an account?
-                                        <span>Register</span>
-                                    </p>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div *ngFor="let alert of alerts">
-                        <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">{{
-                            alert.msg
-                            }}</alert>
-                    </div>
-                </ng-container>
-                <ng-container *ngIf="modalStep === 2">
-                    <div class="modal-body">
-                        <div class="login-form">
-
-                            <h1>Enter your password </h1>
-
-                            <form #formLogin2="ngForm" (ngSubmit)="onSubmitLogin2(formLogin2.value)">
-                                <div class="form-floating">
-                                    <input type="email" class="form-control readonly-input" id="email"
-                                        placeholder="email" [value]="user.email" readonly>
-                                    <label for="email">{{usernameOrEmailLabel}}</label>
-                                </div>
-                                <div class="form-floating">
-                                    <input type="password" name="password" id="password" class="form-control"
-                                        placeholder="place password here" [(ngModel)]="user.password">
-                                    <label for="password" class="form-label">Password</label>
-                                </div>
-                                <p class="create-account"><span>Forgot password?</span></p>
-
-                                <button type="submit" class="btn btn-secondary custom-login"
-                                    [disabled]="user.password.length===0">Log in</button>
-
-                                <p class="create-account" (click)="openModal('register')">Do
-                                    not
-                                    have an account?
+                        <form #formLogin1="ngForm" (ngSubmit)="onSubmitLogin1(formLogin1.value)">
+                            <div class="form-floating">
+                                <input type="text" id="email" name="email" class="form-control" required
+                                    [(ngModel)]="user.email" placeholder="place email here">
+                                <label for="email" class="form-label">Email or username</label>
+                                <button type="submit" class="next">Next</button>
+                                <button class="btn-forgot">Forgot password?</button>
+                                <p class="create-account" (click)="openModal('register')">Do not have
+                                    an account?
                                     <span>Register</span>
                                 </p>
-                            </form>
-                            <div *ngFor="let alert of alerts">
-                                <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout"
-                                    (onClosed)="onClosed(alert)">
-                                    {{
-                                    alert.msg
-                                    }}</alert>
                             </div>
-                        </div>
-
+                        </form>
                     </div>
-                </ng-container>
-            </div>
+                </div>
+                <div *ngFor="let alert of alerts">
+                    <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">{{
+                        alert.msg
+                        }}</alert>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="modalStep === 2">
+                <div class="modal-body">
+                    <div class="login-form">
+
+                        <h1>Enter your password </h1>
+
+                        <form #formLogin2="ngForm" (ngSubmit)="onSubmitLogin2(formLogin2.value)">
+                            <div class="form-floating">
+                                <input type="email" class="form-control readonly-input" id="email" placeholder="email"
+                                    [value]="user.email" readonly>
+                                <label for="email">{{usernameOrEmailLabel}}</label>
+                            </div>
+                            <div class="form-floating">
+                                <input type="password" name="password" id="password" class="form-control"
+                                    placeholder="place password here" [(ngModel)]="user.password">
+                                <label for="password" class="form-label">Password</label>
+                            </div>
+                            <p class="create-account"><span>Forgot password?</span></p>
+
+                            <button type="submit" class="btn btn-secondary custom-login"
+                                [disabled]="user.password.length===0">Log in</button>
+
+                            <p class="create-account" (click)="openModal('register')">Do
+                                not
+                                have an account?
+                                <span>Register</span>
+                            </p>
+                        </form>
+                        <div *ngFor="let alert of alerts">
+                            <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">
+                                {{
+                                alert.msg
+                                }}</alert>
+                        </div>
+                    </div>
+
+                </div>
+            </ng-container>
+
         </ng-container>
         <ng-container *ngIf="modalType === 'register'">
             <ng-container *ngIf="modalStep === 1">
@@ -240,27 +239,28 @@
                 </div>
             </ng-container>
             <ng-container *ngIf="modalStep === 4">
-                    <div class="modal-content custom-content">
-                        <div class="modal-header custom-header">
-                            <div class="icon-x">
-                                <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path
-                                        d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z">
-                                    </path>
-                                </svg>
-                            </div>
+                <div class="modal-content custom-content">
+                    <div class="modal-header custom-header">
+                        <div class="icon-x">
+                            <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path
+                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z">
+                                </path>
+                            </svg>
                         </div>
-                        <div class="modal-body custom-body">
-                            <div class="content-container">
-                                <h2 class="mb-4" >What should we call you?</h2>
-                                <p>@your username must be unique. You can always change it later.</p>
+                    </div>
+                    <div class="modal-body custom-body">
+                        <div class="content-container">
+                            <h2 class="mb-4">What should we call you?</h2>
+                            <p>@your username must be unique. You can always change it later.</p>
                             <form #formRegister4="ngForm" (ngSubmit)="onSubmitRegister4(formRegister4.value)">
                                 <div class="input-group mb-2" style="margin-bottom: 50px;">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">@</div>
                                     </div>
-                                    <input type="text" name="username" (input)="onInputChange()" [(ngModel)]="user.username"
-                                        class="form-control usernameInput" id="inlineFormInputGroup" placeholder="Username">
+                                    <input type="text" name="username" (input)="onInputChange()"
+                                        [(ngModel)]="user.username" class="form-control usernameInput"
+                                        id="inlineFormInputGroup" placeholder="Username">
                                 </div>
                                 <div [hidden]="!showError" class="error-line">
                                     Username already existed
@@ -272,13 +272,13 @@
                                         (click)="user.username = username;onInputChange()"
                                         *ngFor="let username of generatedUsernames">{{username}} </span></div>
                                 <button type="submit" [disabled]="!isUsernameAvailable&&user.username===''"
-                                    class="btn btn-secondary custom-login" >Next</button>
+                                    class="btn btn-secondary custom-login">Next</button>
 
                             </form>
-                            </div>
-                            
                         </div>
+
                     </div>
+                </div>
             </ng-container>
             <ng-container *ngIf="modalStep === 5">
                 <div class="modal-content">

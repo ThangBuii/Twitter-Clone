@@ -23,7 +23,7 @@ export class ModalService {
     this.currentStepSubject.next(1);
   }
   openModal(content: any) {
-    this.modalRef = this.modalService.open(content, { backdrop: 'static' });
+    this.modalRef = this.modalService.open(content, { backdrop: 'static',centered: true,windowClass: 'custom-modal-size'});
   }
   closeModal() {
     if (this.modalRef) {
