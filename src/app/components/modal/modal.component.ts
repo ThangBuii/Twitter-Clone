@@ -194,7 +194,6 @@ export class ModalComponent {
           // The response is "Login successful", do something here
           this.getUserProfile()
           this.closeModal()
-          this.redirectToHome();
         } else {
           this.alerts.push({
             type: 'info',
@@ -221,7 +220,7 @@ export class ModalComponent {
     authFlow.subscribe({
       next: (user: User) => {
         this.userService.saveUserToLocalStorage(user);
-        console.log(user);
+        this.redirectToHome();  
       },
       error: (error) => {
         console.log(error);

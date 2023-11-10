@@ -7,15 +7,7 @@ import { UserServiceService } from './services/user-service.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'X';
-  userInfo?: User
-  constructor(private auth: UserServiceService){}
-  ngOnInit(): void {
-    this.auth.userProfile.subscribe(
-      (data) => {
-        this.userInfo = data;
-      }
-    )
-  }
+  
 }
