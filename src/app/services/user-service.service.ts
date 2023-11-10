@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { User } from '../interface/user';
 
 interface loginRequest{
   username: string,
@@ -44,12 +45,23 @@ interface generateUsernameResponse{
   providedIn: 'root'
 })
 export class UserServiceService {
+  userProfile: BehaviorSubject<User> = new BehaviorSubject<User>({
+    userID: 0,
+    username: '',
+    email: '',
+    displayName: '',
+    registrationDate: '',
+    dob: '',
+    profilePic: '',
+    role: '',
+  });
   private register = 'http://localhost:8080/api/v1/auth/register'
   private login = 'http://localhost:8080/api/v1/auth/login'
   private sendOTP = 'http://localhost:8080/api/v1/auth/user/otp'
   private checkUsername = 'http://localhost:8080/api/v1/auth/user/checkUsername'
   private checkUsernameAndEmailExists = 'http://localhost:8080/api/v1/auth/user/checkAccountExists'
   private generatedUsername = 'http://localhost:8080/api/v1/auth/user/generateUsername'
+  private getUserProfile = 'http://localhost:8080/api/v1/auth/user/user-profile'
   constructor( private http:HttpClient) {}
 
   registerUser(data: registerRequest): Observable<messageResponse>{
@@ -57,7 +69,7 @@ export class UserServiceService {
   }
 
   loginUser(info:loginRequest): Observable<messageResponse>{
-    return this.http.post<messageResponse>(this.login,info)
+    return this.http.post<messageResponse>(this.login,info,{withCredentials:true})
   }
 
   sendOTPUser(info: sendOtpRequest) : Observable<number>{
@@ -66,7 +78,7 @@ export class UserServiceService {
 
   checkUsernameUser(info:string): Observable<boolean>{
     const url = `${this.checkUsername}?value=${info}`
-    return this.http.get<boolean>(url);
+    return this.http.get<boolean>(url,{withCredentials:true});
   }
 
   checkUsernameAndEmailUser(info:checkEmailRequest) : Observable<checkEmailResponse>{
@@ -75,6 +87,17 @@ export class UserServiceService {
 
   generateUsernameUser(info:generateUsernameRequest) : Observable<generateUsernameResponse>{
     return this.http.post<generateUsernameResponse>(this.generatedUsername,info)
+  }
+
+  profile(): Observable<User> {
+    return this.http.get<User>(this.getUserProfile, {
+      withCredentials: true,
+    });
+  }
+
+  saveUserToLocalStorage(user: User) {
+    this.userProfile.next(user);
+    localStorage.setItem('user-profile', JSON.stringify(user));
   }
 
 }

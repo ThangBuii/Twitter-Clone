@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertComponent } from 'ngx-bootstrap/alert';
 import { Observable, Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { User } from 'src/app/interface/user';
 import { ModalService } from 'src/app/services/modal.service';
 import { UserServiceService } from 'src/app/services/user-service.service';
 
@@ -191,7 +192,8 @@ export class ModalComponent {
       (response) => {
         if (response.message === "Login successful") {
           // The response is "Login successful", do something here
-
+          this.getUserProfile()
+          this.closeModal()
           this.redirectToHome();
         } else {
           this.alerts.push({
@@ -209,8 +211,22 @@ export class ModalComponent {
           timeout: 3000
         });
         this.user.password = ''
-      }
+      } 
     )
+  }
+
+  getUserProfile(){
+    let authFlow = this.userService.profile();
+
+    authFlow.subscribe({
+      next: (user: User) => {
+        this.userService.saveUserToLocalStorage(user);
+        console.log(user);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
   }
 
   onSubmitRegister1(data: any) {
@@ -298,20 +314,22 @@ export class ModalComponent {
     this.userInputSubject.next(this.user.username);
   }
   checkInput() {
-
-    this.userService.checkUsernameUser(this.user.username).subscribe(
-      (response) => {
-        if(response === true){
-          this.showError = true;
-          this.isUsernameAvailable = false;
-          this.showSuccess = false;
-        }else{
-          this.showError = false;
-          this.isUsernameAvailable = true;
-          this.showSuccess = true;
+    if(this.user.username !== ''){
+      this.userService.checkUsernameUser(this.user.username).subscribe(
+        (response) => {
+          if(response === true){
+            this.showError = true;
+            this.isUsernameAvailable = false;
+            this.showSuccess = false;
+          }else{
+            this.showError = false;
+            this.isUsernameAvailable = true;
+            this.showSuccess = true;
+          }
         }
-      }
-    )
+      )
+    } 
+    
   }
 
   onSubmitRegister4(formData: any) {
