@@ -83,7 +83,7 @@
 
         </ng-container>
         <ng-container *ngIf="modalType === 'register'">
-            <ng-container *ngIf="modalStep === 1">
+            <ng-container *ngIf="modalStep === 5">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Step 1/3</h5>
@@ -280,21 +280,50 @@
                     </div>
                 </div>
             </ng-container>
-            <ng-container *ngIf="modalStep === 5">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <div class="icon-x">
-                            <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path
-                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z">
-                                </path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="modal-body scrollable-modal">
-                        <h2 class="mb-4" style="margin-bottom: 20px;">Have an unique username</h2>
+            <ng-container *ngIf="modalStep === 1">
+                <div class="modal-header">
+                    <div class="icon-x">
+                        <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path
+                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z">
+                            </path>
+                        </svg>
                     </div>
                 </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <h5 class="modal-title" id="exampleModalLabel">Do not miss</h5>
+                        <p>When you follow someone, you'll see their Tweets in your Timeline. You'll also get more relevant recommendations.</p>
+                        <h6>Follow 1 or add accounts</h6>
+                        
+                        <!-- Centered content -->
+                        <div class="d-flex flex-column align-items-center">
+                          
+                          <!-- Account 1 -->
+                          <div class="d-flex align-items-center my-2 w-100">
+                            <img src="path-to-image" alt="Elon Musk" class="rounded-circle mr-2" style="width: 50px; height: 50px;">
+                            <div class="flex-grow-1">
+                              <h5 class="mb-0">Elon Musk</h5>
+                              <p class="mb-0">@elonmusk</p>
+                            </div>
+                            <button class="btn btn-primary">Monitor</button>
+                          </div>
+                          
+                          <!-- Account 2 -->
+                          <!-- ...similar structure for other accounts -->
+                          
+                        </div>
+                    </div>
+                    
+                  </div>
+                  
+                  <!-- Modal Footer -->
+                  <div class="modal-footer">
+                    <div class="container">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Next</button>
+                    </div>
+                    
+                  </div>
             </ng-container>
         </ng-container>
     </div>

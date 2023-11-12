@@ -337,7 +337,7 @@ export class ModalComponent {
       password: this.user.password,
       username: this.user.username,
       displayName: this.user.displayName,
-      dob: this.user.displayName
+      dob: this.user.dob
     }
 
     if (!this.user.username) return
